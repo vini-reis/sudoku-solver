@@ -2,16 +2,6 @@
 
 Prof. Fabrício Olivetti de França (folivetti@ufabc.edu.br)
 
-## Considerações
-
-Professor, neste commit, peço para que teste o tempo do **BFS**.
-
-Consegui implementar o backtracking mas preciso encontrar meios de otimizá-lo, pois ainda demora a achar a solução.
-
-### Apresentação
-
-[Vídeo da apresentação](https://youtu.be/Dge4Bm72BZk "Vídeo no Youtube")
-
 ## Instruções
 
 Para executar um dos algoritmos solicitados, execute o seguinte comando:
@@ -113,29 +103,3 @@ representa a grade
 ```
 
 em que os `.` representam valores a serem preenchidos.
-
-
-## Entregas
-
-Esse projeto terá múltiplas datas de entrega via Github Classroom (LINK) em que, para efeito de correção, será utilizado o *commit* da data correspondente a entrega:
-
-1. 01/03/2021 - Busca em largura, profundidade, A*
-2. 12/03/2021 - AC-3 e Backtracking
-3. 15/03/2021 - Vídeo de apresentação
-
-Além dos códigos, o aluno deverá gravar um vídeo mostrando a compilação e execução dos códigos. No início do vídeo o aluno deve mostrar o rosto e dizer claramente seu nome e RA.
-
-## Avaliação
-
-A nota será atribuída em relação a:
-
-- P1: organização e estruturação do código ($[0, 3]$)
-- P2: corretude das soluções ($[0, 4]$)
-- P3: rank no tempo de execução ($[0, 3]$)
-
-O rank no tempo de execução será:
-
-- Os $10\%$ mais rápidos: 3 pontos
-- Os $10\%$ mais lentos: 1 ponto
-- Entre esses dois: 2 pontos
-- Caso o programa ultrapasse um limite de tempo razoável ou aconteça estouro de memória: 0 pontos

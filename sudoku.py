@@ -68,7 +68,7 @@ class CSP(Board):
 
         self.X : list = [True if self._flat[i] == 0 else False for i in range(81)]
         self.D : list = [[v for v in possibilities if self.check(c, num = v)] if self.X[c] else [self._flat[c]] for c in range(81)]
-        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if self._flat[e] != 0]) if self.X[c] else self._flat[c] for c in range(81)]
+        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if not self.X[e]]) if self.X[c] else [self._flat[c]] for c in range(81)]
 
         self.queue = list(set((i, j) for i in range(81) for j in range(81) if self.X[i] and self.X[j] and i < j and i in self.neighboors[j]))
 
@@ -89,7 +89,7 @@ class CSP(Board):
 
     def update(self):
         self.X = [True if len(self.D[i]) != 1 else False for i in range(81)]
-        self.C = [set([v for e in self.neighboors[c] for v in self.D[e]]) if self.X[c] else [v for v in possibilities if v != self.D[c][0]] for c in range(81)]
+        self.C = [set([v for e in self.neighboors[c] for v in self.D[e] if not self.X[e]]) if self.X[c] else [v for v in possibilities if v != self.D[c][0]] for c in range(81)]
         self.D = [[v for v in self.D[c] if v not in self.C[c]] if self.X[c] else self.D[c] for c in range(81)]
 
 def revise(csp : CSP, i : int, j : int):
@@ -129,7 +129,8 @@ def backtracking(csp):
     # if not csp.valid(): return "Falha!"
     i = selectVar(csp)
     for v in sortValues(i, csp):
-        if assign(v,i,csp):
-            sol = backtracking(csp)
+        csp1 = assign(v,i,CSP(str(csp)))
+        if csp1:
+            sol = backtracking(csp1)
             if (sol): return sol
     return False

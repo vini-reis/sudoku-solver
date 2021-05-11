@@ -8,12 +8,12 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "main.py",
-            "console": "integratedTerminal",
-            "args": [
-                "top5.txt",
-                "backtracking"
-            ]
+            "program": "test.py",
+            "console": "integratedTerminal"
+            // "args": [
+            //     "top5.txt",
+            //     "backtracking"
+            // ]
         }
     ]
 }

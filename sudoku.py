@@ -68,7 +68,7 @@ class CSP(Board):
 
         self.X : list = [True if self._flat[i] == 0 else False for i in range(81)]
         self.D : list = [[v for v in possibilities if self.check(c, num = v)] if self.X[c] else [self._flat[c]] for c in range(81)]
-        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if not self.X[e]]) if self.X[c] else [self._flat[c]] for c in range(81)]
+        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if not self.X[e]]) if self.X[c] else [p for p in possibilities if p != self._flat[c]] for c in range(81)]
 
         self.queue = list(set((i, j) for i in range(81) for j in range(81) if self.X[i] and self.X[j] and i < j and i in self.neighboors[j]))
 
@@ -107,7 +107,8 @@ def AC3(csp : CSP):
     if revise(csp, i, j):
         if len(csp.D[i]) == 0: return False
         [csp.queue.append((i,k)) for k in csp.neighboors[i] if k != i]
-    return AC3(csp)
+        csp.update()
+    return csp
 
 def selectVar(csp : CSP) -> int:
     count = [(len(csp.D[c]), c) for c in range(81) if csp.X[c]]
@@ -121,16 +122,16 @@ def sortValues(i : int, csp : CSP):
 def assign(v, i, csp) -> CSP:
     csp.D[i] = [v]
     csp.update()
+    print(csp)
     return AC3(csp)
 
 def backtracking(csp):
     print(csp)
     if csp.goal(): return csp
-    # if not csp.valid(): return "Falha!"
+    if not csp.valid(): return "Falha!"
     i = selectVar(csp)
     for v in sortValues(i, csp):
-        csp1 = assign(v,i,CSP(str(csp)))
-        if csp1:
-            sol = backtracking(csp1)
-            if (sol): return sol
+        if assign(v,i,csp):
+            if backtracking(csp):
+                return csp
     return False

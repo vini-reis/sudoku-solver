@@ -1,3 +1,4 @@
+from ac3 import neighboors
 import numpy as np
 import math
 
@@ -66,14 +67,14 @@ class CSP(Board):
         super().__init__(state)
         self.neighboors : list = [set([math.floor(i / 9) * 9 + k for k in range(9)] + [(i % 9) + 9 * k for k in range(9)] + [(j + 3 * math.floor((i % 9) / 3)) + (math.floor(i / 27) * 27 + k * 9) for k in range(3) for j in range(3)]) for i in range(81)]
 
-        self.X : list = [True if self._flat[i] == 0 else False for i in range(81)]
-        self.D : list = [[v for v in possibilities if self.check(c, num = v)] if self.X[c] else [self._flat[c]] for c in range(81)]
-        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if not self.X[e]]) if self.X[c] else [p for p in possibilities if p != self._flat[c]] for c in range(81)]
+        self.X : list = [i for i in range(81) if self._flat[i] == 0]
+        self.D : list = [[v for v in possibilities if self.check(c, num = v)] if c in self.X else [self._flat[c]] for c in range(81)]
+        self.C : list = [set([self._flat[e] for e in self.neighboors[c] if e not in self.X]) if c in self.X else [p for p in possibilities if p != self._flat[c]] for c in range(81)]
 
-        self.queue = list(set((i, j) for i in range(81) for j in range(81) if self.X[i] and self.X[j] and i < j and i in self.neighboors[j]))
+        self.queue = list(set((i, j) for i in range(81) for j in range(81) if i in self.X and j in self.X and i < j and i in self.neighboors[j]))
 
     def __str__(self):
-        return "".join([str(self.D[c][0]) if not self.X[c] else '.' for c in range(81)])
+        return "".join([str(self.D[c][0]) if c not in self.X else '.' for c in range(81)])
 
     def valid(self):
         for c in range(81):
@@ -87,28 +88,36 @@ class CSP(Board):
                 return False
         return True
 
-    def update(self):
-        self.X = [True if len(self.D[i]) != 1 else False for i in range(81)]
-        self.C = [set([v for e in self.neighboors[c] for v in self.D[e] if not self.X[e]]) if self.X[c] else [v for v in possibilities if v != self.D[c][0]] for c in range(81)]
-        self.D = [[v for v in self.D[c] if v not in self.C[c]] if self.X[c] else self.D[c] for c in range(81)]
+    def update(self, i : int):
+        self.X.remove(i)
+        self.C = [set([v for e in self.neighboors[c] for v in self.D[e] if e not in self.X]) if c not in self.X else [v for v in possibilities if v != self.D[c][0]] for c in range(81)]
+        self.D = [[v for v in self.D[c] if v not in self.C[c]] if c in self.X else self.D[c] for c in range(81)]
+
+    def test(self, i, vi, j, vj):
+        # TODO: Otimizar o teste da revisão
+        temp = {n for n in self.neighboors[i] if not self.X[n]}
+        return vi not in set(self.D[k] for k in self.neighboors[i] if self.X[k]) and vj not in self.neighboors[j]
 
 def revise(csp : CSP, i : int, j : int):
-    violate = [v for v in csp.D[i] if v in csp.C[j]]
+    violate = [vi for vi in csp.D[i] if True not in [csp.test(i, vi, j, vj) for vj in csp.D[j]]]
     if len(violate) > 0:
-        csp.D[i] = [i for i in csp.D[i] if i not in violate]
+        csp.D[i] = [v for v in csp.D[i] if v not in violate]
         csp.update()
         return True
     return False
 
 def AC3(csp : CSP):
-    if len(csp.queue) == 0: return True
+    if len(csp.queue) == 0: return csp
+    # print(csp)
+    # print(len(csp.queue))
 
     i,j = csp.queue.pop()
     if revise(csp, i, j):
         if len(csp.D[i]) == 0: return False
-        [csp.queue.append((i,k)) for k in csp.neighboors[i] if k != i]
+        [csp.queue.append((k,i)) for k in csp.neighboors[i] if k != i and (k,i) not in csp.queue]
         csp.update()
-    return csp
+        print("Revised!")
+    return AC3(csp)
 
 def selectVar(csp : CSP) -> int:
     count = [(len(csp.D[c]), c) for c in range(81) if csp.X[c]]
@@ -120,18 +129,20 @@ def sortValues(i : int, csp : CSP):
     return [v[1] for v in count]
 
 def assign(v, i, csp) -> CSP:
-    csp.D[i] = [v]
-    csp.update()
-    print(csp)
-    return AC3(csp)
+    csp2 : CSP = CSP(str(csp))
+    csp2.D[i] = [v]
+    csp2.update()
+    return AC3(csp2)
 
-def backtracking(csp):
+def backtracking(csp : CSP):
     print(csp)
+    csp.update()
     if csp.goal(): return csp
     if not csp.valid(): return "Falha!"
     i = selectVar(csp)
     for v in sortValues(i, csp):
-        if assign(v,i,csp):
-            if backtracking(csp):
-                return csp
+        sol : CSP or bool = assign(v,i,csp)
+        if sol:
+            sol = backtracking(sol)
+            if sol: return sol
     return False

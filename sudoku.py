@@ -141,6 +141,7 @@ def assign(v, i, csp) -> CSP:
     return AC3(csp2, csp2.queue())
 
 def backtracking(csp : CSP, r):
+    # FIXME: Check recursion depth
     print(r)
     # csp.update()
     if csp.goal(): return csp

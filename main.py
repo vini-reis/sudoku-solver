@@ -6,6 +6,7 @@ from greedy import *
 from astar import *
 from ac3 import *
 from backtracking import *
+from sudoku import *
 
 if __name__ == '__main__':
     # Lendo argumentos:
@@ -26,7 +27,8 @@ if __name__ == '__main__':
             print(astar(board,g,h1))
     elif algorithm == "ac3":
         for board in read_board(filename):
-            print(ac3(csp(board),worklist(board)))
+            csp = CSP(board)
+            print(AC3(csp,csp.queue()))
     elif algorithm == "backtracking":
         for board in read_board(filename):
-            print(backtracking(csp(board)))
+            print(backtracking(CSP(board)))

@@ -1,6 +1,10 @@
-# Projeto 1: Sudoku - Inteligência Artificial - 2021.Q1
+# Sudoku Solver
 
-Prof. Fabrício Olivetti de França (folivetti@ufabc.edu.br)
+Este projeto foi desenvolvido para a disciplina de Inteligência Artificial na UFABC, no primeiro quadrimestre de 2021, com o professor Fabrício Olivetti de França.
+
+O projeto sofreu melhorias após o fim da disciplina para nível de conhecimento e treino da implementação de algortimos de busca não informada, e formulação de problemas CSP (*Constraint Satisfaction Problem*, ou Problema de Satisfação de Restrição).
+
+A estrutura do problema ainda pode ser melhorada em futuras versões.
 
 ## Instruções
 
@@ -32,13 +36,22 @@ python sudoku.py <nome_do_arquivo> <nome_do_algoritmo>
 - ``backtracking``
 : Executa o algoritmo de Backtracking com AC-3
   
-### Status de implementação
+## Status de implementação
 
 - Busca em largura - **OK**
 - Busca em profundidade - **OK**
 - Busca A* - **OK**
-- AC-3 - **OK**
-- Backtracking - **OK**
+- AC-3 - **WIP**
+- Backtracking - **OK** - Recomendado
+
+## Changelog
+
+Versão 2.0:
+
+- Reestruturação da problema do Sudoku
+- Reestruturação do CSP
+- Correção do algoritmo de backtracking
+- Início da reestruturação do algoritmo de AC-3 (ainda em desenvolvimento)
 
 ## Enunciado
 
